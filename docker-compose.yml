@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile
+    container_name: kapda-co-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongo:27017/kapda-co
+      - JWT_SECRET=${JWT_SECRET}
+      - CLIENT_URL=http://localhost:5173
+      - CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+    volumes:
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - kapda-co-network
+
+  mongo:
+    image: mongo:7
+    container_name: kapda-co-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - kapda-co-network
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: kapda-co-redis
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+  #   networks:
+  #     - kapda-co-network
+
+volumes:
+  mongo-data:
+
+networks:
+  kapda-co-network:
+    driver: bridge
+

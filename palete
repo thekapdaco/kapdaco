@@ -1,0 +1,217 @@
+Colour palette (complete, copy-ready)
+
+Below is the full, production-ready colour palette for The Kapda Co. — navy→slate→beige with glass/gold accents — supplied as:
+
+a quick reference table;
+
+CSS custom properties you can paste into :root;
+
+a small JSON object you can save;
+
+a Tailwind theme.extend.colors snippet (drop into tailwind.config.js).
+
+I also include usage notes (which token to use where) and contrast guidance.
+
+1 — Quick reference (name → hex)
+
+Primary / Brand
+
+kc-navy-900: #0F1B2A (deep ink — ultra dark)
+
+kc-navy-700: #1C2D48 (primary navy)
+
+kc-slate-600: #32495F (muted slate)
+
+kc-slate-500: #3E5574 (secondary/gradient stop)
+
+Neutrals / Surfaces
+
+kc-cream-50: #FBF8F5 (very light cream)
+
+kc-cream-100: #F8F4EE (background cream)
+
+kc-beige-300: #D9C8BC (soft beige accent)
+
+kc-tan-400: #C9B29F (beige darker)
+
+kc-gray-500: #8C8C8C (secondary text)
+
+kc-ink: #1B1B1B (primary text on light)
+
+kc-surface-dark: #0B0B0B (dark surfaces)
+
+Gold / Accents
+
+kc-gold-100: #EED8B8 (highlight/hover light)
+
+kc-gold-200: #D3A75F (brand gold - primary accent)
+
+kc-gold-300: #9F7860 (warm rose-gold / secondary)
+
+Glass / Borders / Frost
+
+kc-glass-01: rgba(255,255,255,0.06) /* subtle fill on dark */
+
+kc-glass-border: rgba(255,255,255,0.12) /* glass border */
+
+kc-glass-strong: rgba(255,255,255,0.18)
+
+State colours
+
+kc-success: #2E7D32 (green)
+
+kc-danger: #B71C1C (red)
+
+kc-warning: #FFB74D (orange/yellow)
+
+Utility (shadows / overlays)
+
+kc-shadow-sm: rgba(0,0,0,0.06)
+
+kc-shadow-md: rgba(0,0,0,0.10)
+
+2 — Paste-ready CSS variables (theme.css)
+
+Copy/paste into :root (or your theme file). Adjust names if you already have tokens.
+
+:root{
+  /* Primary palette */
+  --kc-navy-900: #0F1B2A;
+  --kc-navy-700: #1C2D48;
+  --kc-slate-600: #32495F;
+  --kc-slate-500: #3E5574;
+
+  /* Neutrals / surfaces */
+  --kc-cream-50: #FBF8F5;
+  --kc-cream-100: #F8F4EE;
+  --kc-beige-300: #D9C8BC;
+  --kc-tan-400: #C9B29F;
+  --kc-gray-500: #8C8C8C;
+  --kc-ink: #1B1B1B;
+  --kc-surface-dark: #0B0B0B;
+
+  /* Gold accents */
+  --kc-gold-100: #EED8B8;
+  --kc-gold-200: #D3A75F;
+  --kc-gold-300: #9F7860;
+  --kc-grad-gold: linear-gradient(135deg, #D3A75F, #9F7860);
+
+  /* Glass / frost */
+  --kc-glass-01: rgba(255,255,255,0.06);
+  --kc-glass-border: rgba(255,255,255,0.12);
+  --kc-glass-strong: rgba(255,255,255,0.18);
+
+  /* States */
+  --kc-success: #2E7D32;
+  --kc-danger: #B71C1C;
+  --kc-warning: #FFB74D;
+
+  /* Shadows */
+  --kc-shadow-sm: 0 6px 16px rgba(0,0,0,0.06);
+  --kc-shadow-md: 0 18px 40px rgba(0,0,0,0.10);
+
+  /* Radii */
+  --kc-radius: 16px;
+  --kc-radius-lg: 20px;
+}
+
+
+Example usage notes
+
+Background page: background: linear-gradient(180deg, var(--kc-navy-700), var(--kc-slate-500));
+
+Card glass: background: var(--kc-glass-01); border: 1px solid var(--kc-glass-border); backdrop-filter: blur(10px);
+
+Primary CTA: background: var(--kc-grad-gold); color: var(--kc-navy-700);
+
+Secondary dark CTA: background: var(--kc-navy-700); color: var(--kc-cream-100);
+
+3 — JSON (save to your design tokens file)
+{
+  "kc": {
+    "navy": { "900":"#0F1B2A", "700":"#1C2D48", "500":"#3E5574", "400":"#32495F" },
+    "cream": { "50":"#FBF8F5", "100":"#F8F4EE" },
+    "beige": { "300":"#D9C8BC", "400":"#C9B29F" },
+    "gold": { "100":"#EED8B8", "200":"#D3A75F", "300":"#9F7860" },
+    "ink":"#1B1B1B",
+    "gray":"#8C8C8C",
+    "surfaceDark":"#0B0B0B",
+    "glass": { "01":"rgba(255,255,255,0.06)", "border":"rgba(255,255,255,0.12)", "strong":"rgba(255,255,255,0.18)" },
+    "state": { "success":"#2E7D32", "danger":"#B71C1C", "warning":"#FFB74D" },
+    "shadow": { "sm":"rgba(0,0,0,0.06)", "md":"rgba(0,0,0,0.10)" }
+  }
+}
+
+4 — Tailwind config snippet (tailwind.config.js)
+
+Add to theme.extend.colors for consistency:
+
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        kc: {
+          navy: { 900: '#0F1B2A', 700: '#1C2D48', 500: '#3E5574', 400: '#32495F' },
+          cream: { 50: '#FBF8F5', 100: '#F8F4EE' },
+          beige: { 300: '#D9C8BC', 400: '#C9B29F' },
+          gold: { 100: '#EED8B8', 200: '#D3A75F', 300: '#9F7860' },
+          ink: '#1B1B1B',
+          gray: '#8C8C8C',
+          surfaceDark: '#0B0B0B'
+        }
+      },
+      boxShadow: {
+        'kc-sm': '0 6px 16px rgba(0,0,0,0.06)',
+        'kc-md': '0 18px 40px rgba(0,0,0,0.10)'
+      },
+      borderRadius: {
+        'kc': '16px',
+        'kc-lg': '20px'
+      }
+    }
+  }
+};
+
+5 — Contrast & accessibility notes
+
+Primary CTA text color should meet contrast 4.5:1. For --kc-grad-gold use navy text --kc-navy-700 for large CTAs; verify with your generator — sometimes #1C2D48 on gold meets contrast; if not, use #0F1B2A (darker) or convert CTA text to white for small CTA text.
+
+Use --kc-cream-100 (#F8F4EE) as light text on dark surfaces. It has good contrast on --kc-navy-700 for typical sizes; always test headings and small UI text separately.
+
+Glass fills are semi-transparent — when placing white text on --kc-glass-01, ensure underlying background provides enough contrast. If not, boost opacity (e.g., rgba(255,255,255,0.09)).
+
+For disabled state use muted neutral #EDE9E3 with --kc-gray-500 text.
+
+6 — Useful gradients / shadows / tokens
+
+Gold gradient (CTA): --kc-grad-gold: linear-gradient(135deg, #D3A75F 0%, #9F7860 100%);
+
+Navy hero gradient: linear-gradient(180deg, #1C2D48 0%, #3E5574 100%);
+
+Premium shadow: 0 12px 36px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.06)
+
+Glass card style:
+
+background: var(--kc-glass-01);
+border: 1px solid var(--kc-glass-border);
+backdrop-filter: blur(10px) saturate(110%);
+box-shadow: var(--kc-shadow-md);
+border-radius: var(--kc-radius-lg);
+
+7 — Quick copy-paste palette summary (for designers)
+
+Navy: #1C2D48 (main)
+
+Slate: #3E5574 (secondary)
+
+Beige: #D9C8BC (accent)
+
+Cream: #F8F4EE (background / text on dark)
+
+Gold: #D3A75F → #9F7860 (gradient)
+
+Glass fill: rgba(255,255,255,0.06) (cards)
+
+Text (dark): #1B1B1B
+
+Secondary text: #8C8C8C

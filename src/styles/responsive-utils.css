@@ -1,0 +1,302 @@
+/* src/styles/responsive-utils.css
+   Mobile-first responsive utilities and common patterns.
+   Uses existing CSS variables for theme (do not change theme tokens). */
+
+:root {
+  /* keep your existing theme tokens; only rely on them */
+  --container-max: 1280px;
+  --gap-sm: 0.5rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.5rem;
+}
+
+/* Global reset for layout box sizing (already in index.css, but ensure it's here too) */
+*, *::before, *::after { 
+  box-sizing: border-box; 
+}
+
+/* Container utility */
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem; /* mobile gutter */
+  max-width: var(--container-max);
+}
+
+@media (min-width: 768px) {
+  .container { 
+    padding-inline: 2rem; 
+  }
+}
+
+/* Responsive product grid (mobile-first) */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* default: 2 cols mobile */
+  gap: var(--gap-md);
+}
+
+@media (min-width: 480px) {
+  .product-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+@media (min-width: 768px) {
+  .product-grid { 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: var(--gap-lg); 
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid { 
+    grid-template-columns: repeat(4, 1fr); 
+  }
+}
+
+/* Product card base - enhance existing cards */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* allows equal-height columns when placed in grid */
+  background: var(--card-surface, var(--kc-glass-01)); /* uses theme token if available */
+  border-radius: var(--radius-md, var(--kc-radius-md));
+  overflow: hidden;
+  box-shadow: var(--card-shadow, var(--kc-shadow-card));
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.product-card:hover { 
+  transform: translateY(-4px); 
+}
+
+/* Image wrapper - use aspect-ratio for stable card heights */
+.product-card__image {
+  width: 100%;
+  aspect-ratio: 4/5; /* consistent ratio */
+  display: block;
+  background: var(--neutral-light, var(--kc-cream-50));
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 4/5) {
+  .product-card__image { 
+    height: 0; 
+    padding-bottom: calc(100% * (5 / 4)); 
+  }
+}
+
+/* Content area */
+.product-card__content {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1; /* fill remaining space */
+}
+
+/* Title, price, meta */
+.product-card__title {
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  line-height: 1.25;
+  margin: 0;
+  color: var(--text-primary, var(--kc-cream-100));
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* truncate to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card__price {
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  margin-top: auto; /* push price/cta to bottom if extra content */
+  font-weight: 600;
+  color: var(--text-accent, var(--kc-gold-200));
+}
+
+/* CTA button - full width on mobile */
+.product-card__actions {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.product-card__btn {
+  flex: 1;
+  min-height: 44px; /* tappable target */
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Utility show/hide */
+.hide-mobile { 
+  display: none; 
+}
+
+.show-mobile { 
+  display: block; 
+}
+
+@media (min-width: 768px) {
+  .hide-mobile { 
+    display: initial; 
+  }
+  
+  .show-mobile { 
+    display: none; 
+  }
+}
+
+/* Prevent horizontal overflow */
+.resp-no-overflow { 
+  overflow-x: hidden; 
+}
+
+/* Small helper for centered placeholder text */
+.center-placeholder { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 1rem; 
+  color: var(--muted, var(--kc-ink-2)); 
+}
+
+/* Accessibility focus */
+.product-card__btn:focus { 
+  outline: 3px solid rgba(0,0,0,0.08); 
+  outline-offset: 2px; 
+}
+
+/* ---------------------------------------------------------
+   Mobile-only layout overrides for shop & designer pages
+   IMPORTANT: desktop (>= 1024px) remains unchanged.
+   ------------------------------------------------------ */
+@media (max-width: 767px) {
+  /* Shop page: 2-column grid on small screens, equal-height cards */
+  .shop-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--kc-gap-sm);
+    row-gap: var(--kc-gap-sm);
+  }
+
+  .shop-product-card-wrapper {
+    height: 100%;
+  }
+
+  .shop-products-grid .product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Ensure product images keep a stable aspect ratio on mobile */
+  .shop-products-grid .product-image,
+  .shop-products-grid .product-card__image {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+  }
+
+  /* Shop page: touch-friendly filters/sort/category chips */
+  .shop-category-chip {
+    min-height: 44px;
+    padding-block: 10px;
+  }
+
+  .shop-sort-select select {
+    min-height: 44px;
+    padding-block: 10px;
+    font-size: 0.875rem;
+  }
+
+  .shop-mobile-filter-button {
+    min-height: 44px;
+  }
+
+  /* Designer list: 1–2 cards per row, centered and equal height */
+  .designer-list-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--kc-gap-sm);
+    row-gap: var(--kc-gap-sm);
+    justify-items: stretch;
+    align-items: stretch;
+  }
+
+  .designer-list-grid > * {
+    height: 100%;
+    display: flex;
+  }
+
+  .designer-list-grid .group {
+    height: 100%;
+    width: 100%;
+    display: flex;
+  }
+
+  .designer-list-grid .designer-card-shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  /* Ensure styles and products sections maintain fixed height on mobile */
+  .designer-list-grid .designer-card-styles,
+  .designer-list-grid .designer-card-products {
+    height: 3.5rem; /* 56px */
+    overflow: hidden;
+  }
+
+  /* Horizontal scrollable sort tabs on designer list */
+  .designer-sort-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .designer-sort-tabs button {
+    flex: 0 0 auto;
+  }
+
+  /* Designer profile: 2-column product grid on mobile, equal heights */
+  .designer-profile-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--kc-gap-sm);
+    row-gap: var(--kc-gap-sm);
+  }
+
+  .designer-profile-products-grid > * {
+    height: 100%;
+  }
+
+  .designer-profile-products-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  /* Designer profile: horizontally scrollable tabs row */
+  .designer-tabs-scroll {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .designer-tabs-scroll > * {
+    min-width: max-content;
+  }
+}
+

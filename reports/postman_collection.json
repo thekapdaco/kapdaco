@@ -1,0 +1,222 @@
+{
+  "info": {
+    "name": "Kapda Co. API",
+    "description": "Postman collection for Kapda Co. e-commerce API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "kapda-co-api-2025"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "signup"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/public/products?page=1&limit=20&category=men",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "products"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"},
+                {"key": "category", "value": "men"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/public/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "products", ":id"],
+              "variable": [{"key": "id", "value": ""}]
+            }
+          }
+        },
+        {
+          "name": "List Designers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/public/designers?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["public", "designers"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "20"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seller",
+      "item": [
+        {
+          "name": "List My Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["seller", "products"]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Product\",\n  \"description\": \"Test description\",\n  \"price\": 999,\n  \"category\": \"men\",\n  \"stock\": 10,\n  \"sizes\": [\"S\", \"M\", \"L\"],\n  \"colors\": [\"Black\", \"White\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["seller", "products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart"]
+            }
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"\",\n  \"quantity\": 1,\n  \"size\": \"M\",\n  \"color\": \"Black\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cart/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["cart", "add"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

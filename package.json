@@ -1,0 +1,44 @@
+{
+  "name": "kapda-co",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "typecheck": "echo 'TypeScript not configured. Consider migrating to TS.'",
+    "test": "echo 'Tests not configured. See reports/ISSUES.md'",
+    "test:e2e": "echo 'E2E tests not configured. Install @playwright/test'",
+    "dev:all": "concurrently \"npm run dev\" \"cd backend && npm run dev\"",
+    "seed": "node scripts/seed.js",
+    "cleanup": "node scripts/cleanup.js --confirm"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "framer-motion": "^11.18.2",
+    "html-to-image": "^1.11.13",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-helmet-async": "^2.0.5",
+    "react-router-dom": "^7.6.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "autoprefixer": "^10.4.21",
+    "browserslist": "^4.28.1",
+    "caniuse-lite": "^1.0.30001760",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "vite": "^7.0.4"
+  }
+}
