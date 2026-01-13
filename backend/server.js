@@ -84,12 +84,9 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, Postman, tests, etc.) in development and test only
+    // Allow requests with no origin (platform health checks, server-to-server, Postman)
     if (!origin) {
-      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        return callback(null, true);
-      }
-      return callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
     
     // In development and test, be more permissive with localhost
