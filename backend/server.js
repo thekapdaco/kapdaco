@@ -82,6 +82,13 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
     ? [process.env.CLIENT_URL]
     : ['http://localhost:5173', 'http://localhost:3000']; // Development fallback
 
+const normalizeOrigin = (value) => {
+  if (!value) return value;
+  return value.trim().replace(/\/+$/, '').toLowerCase();
+};
+
+const normalizedAllowedOrigins = allowedOrigins.map(normalizeOrigin);
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (platform health checks, server-to-server, Postman)
@@ -96,8 +103,10 @@ app.use(cors({
       }
     }
     
+    const normalizedOrigin = normalizeOrigin(origin);
+
     // Check if origin is in allowed list
-    if (allowedOrigins.includes(origin)) {
+    if (normalizedAllowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
       // Use console.warn in CORS callback (logger import would be async)
