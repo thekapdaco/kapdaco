@@ -4,6 +4,7 @@ import { Filter, SlidersHorizontal, Package } from "lucide-react";
 import ProductCard from "../../components/ProductCard";
 import { GridSkeleton, ProductCardSkeleton } from "../../components/ui";
 import { gridStaggerContainer, gridItemVariants } from "../../lib/motionVariants";
+import api from "../../lib/api";
 import "../../styles/mens-collection.css";
 
 const Men = () => {
@@ -17,9 +18,7 @@ const Men = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/public/products?category=men`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to load products");
+        const data = await api('/api/public/products?category=men');
         setItems((data.products || []).map(p => ({ 
           id: p._id, 
           name: p.title, 

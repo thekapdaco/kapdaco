@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { KCButton } from "../../components/ui";
+import api from "../../lib/api";
 import {
   GoldButton,
   StatPill,
@@ -54,20 +55,13 @@ const DesignerDashboard = () => {
       setLoading(true);
       try {
         const token = localStorage.getItem("token");
-        const [statsRes, designsRes] = await Promise.all([
-          fetch("/api/designer/stats", { headers: { Authorization: `Bearer ${token}` } }),
-          fetch("/api/designer/products?limit=12", { headers: { Authorization: `Bearer ${token}` } }),
+        const [statsJson, designsJson] = await Promise.all([
+          api("/api/designer/stats", { token }),
+          api("/api/designer/products?limit=12", { token }),
         ]);
 
-        if (statsRes.ok) {
-          const statsJson = await statsRes.json();
-          setStats(statsJson);
-        }
-
-        if (designsRes.ok) {
-          const designsJson = await designsRes.json();
-          setRecentDesigns(designsJson.products || designsJson.designs || []);
-        }
+        setStats(statsJson);
+        setRecentDesigns(designsJson.products || designsJson.designs || []);
       } catch (err) {
         console.error("Failed to fetch designer dashboard data", err);
       } finally {

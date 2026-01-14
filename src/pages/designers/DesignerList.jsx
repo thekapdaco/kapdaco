@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowRight,
   Award,
@@ -30,6 +30,7 @@ import {
   Badge,
 } from "../../components/designers";
 import "../../styles/designer.css";
+import api from "../../lib/api";
 
 const backgroundNoise =
   "url('data:image/svg+xml,%3Csvg viewBox=\\'0 0 400 400\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cfilter id=\\'n\\'%3E%3CfeTurbulence type=\\'fractalNoise\\' baseFrequency=\\'1.2\\' numOctaves=\\'2\\' stitchTiles=\\'stitch\\'/%3E%3CfeColorMatrix type=\\'saturate\\' values=\\'0\\'/%3E%3C/filter%3E%3Crect width=\\'400\\' height=\\'400\\' filter=\\'url(%23n)\\' opacity=\\'0.05\\'/%3E%3C/svg%3E')";
@@ -44,6 +45,9 @@ const cardVariants = {
 };
 
 const DesignerList = () => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [designers, setDesigners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,8 +59,6 @@ const DesignerList = () => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [commissionModal, setCommissionModal] = useState(null);
   const [activeFilters, setActiveFilters] = useState([]);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -86,15 +88,15 @@ const DesignerList = () => {
         ...(activeSearchTerm && { search: activeSearchTerm }),
       });
 
-      const response = await fetch(`/api/public/designers?${queryParams}`);
-
       let data;
 
-      if (!response.ok) {
+      try {
+        data = await api(`/api/public/designers?${queryParams}`);
+      } catch (error) {
         // Graceful fallback for local/dev when API is not available (500, 404, etc.)
         console.warn(
-          "Designer API returned an error status, using fallback designers instead:",
-          response.status
+          "Designer API returned an error, using fallback designers instead:",
+          error
         );
 
         const fallbackDesigners = [
@@ -143,8 +145,6 @@ const DesignerList = () => {
           designers: fallbackDesigners,
           pagination: { hasNext: false },
         };
-      } else {
-        data = await response.json();
       }
 
       if (page === 1) {

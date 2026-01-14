@@ -10,6 +10,7 @@ import { KCButton, KCCard, KCCardHeader, GridSkeleton, ProductCardSkeleton } fro
 import SEO from '../components/SEO';
 import { ANIMATION_DURATIONS, ANIMATION_EASE, ANIMATION_EASE_OUT } from '../lib/animationConstants';
 import { getCachedProducts, setCachedProducts } from '../lib/productCache';
+import api from '../lib/api';
 import { getOrganizationJsonLd, getWebsiteJsonLd } from '../lib/seoHelpers';
 import '../styles/home-responsive.css';
 import {
@@ -215,18 +216,10 @@ const Home = () => {
         // Always fetch fresh data from API to get the latest products
         // Backend sorts by createdAt: -1 (newest first) by default
         // Parallel fetch all categories at once
-        const [menRes, womenRes, accessoriesRes] = await Promise.all([
-          fetch('/api/public/products?category=men&limit=3'),
-          fetch('/api/public/products?category=women&limit=3'),
-          fetch('/api/public/products?category=accessories&limit=3'),
-        ]);
-
-        if (ignore) return;
-
         const [menData, womenData, accessoriesData] = await Promise.all([
-          menRes.json(),
-          womenRes.json(),
-          accessoriesRes.json(),
+          api('/api/public/products?category=men&limit=3'),
+          api('/api/public/products?category=women&limit=3'),
+          api('/api/public/products?category=accessories&limit=3'),
         ]);
 
         if (ignore) return;

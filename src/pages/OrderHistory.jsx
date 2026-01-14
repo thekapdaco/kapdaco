@@ -96,11 +96,14 @@ const OrderHistory = () => {
       
       // Get API base URL from environment (same as api.js)
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-      const invoiceUrl = `${API_BASE_URL}/api/orders/${orderId}/invoice`;
+      const invoiceUrl = API_BASE_URL
+        ? `${API_BASE_URL}/api/orders/${orderId}/invoice`
+        : `/api/orders/${orderId}/invoice`;
       
       // Fetch invoice as blob
       const response = await fetch(invoiceUrl, {
         method: 'GET',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`
         }

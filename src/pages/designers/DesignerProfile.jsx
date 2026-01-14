@@ -87,9 +87,13 @@ const DesignerProfile = () => {
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
+
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+      const url = API_BASE_URL ? `${API_BASE_URL}/api/public/designers/${id}` : `/api/public/designers/${id}`;
       
-      const response = await fetch(`/api/public/designers/${id}`, {
-        headers
+      const response = await fetch(url, {
+        headers,
+        credentials: 'include'
       });
       if (!response.ok) {
         if (response.status === 404) {

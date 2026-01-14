@@ -7,6 +7,7 @@ import {
   ShoppingBag, Star, ArrowRight, Activity
 } from "lucide-react";
 import AdminNav from "../../components/AdminNav";
+import api from "../../lib/api";
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -39,40 +40,26 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const appRes = await fetch("/api/admin/applications?status=pending&limit=10", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const appData = await api("/api/admin/applications?status=pending&limit=10", { token });
+      setApplications(appData.applications || []);
+      setStats(prev => ({
+        ...prev,
+        pendingApplications: appData.applications?.length || 0
+      }));
 
-      if (appRes.ok) {
-        const appData = await appRes.json();
-        setApplications(appData.applications || []);
-        setStats(prev => ({
-          ...prev,
-          pendingApplications: appData.applications?.length || 0
-        }));
-      }
-
-      const statsRes = await fetch('/api/admin/stats', { headers: { Authorization: `Bearer ${token}` }});
-      if (statsRes.ok) {
-        const s = await statsRes.json();
-        setStats(prev => ({
-          ...prev,
-          totalApplications: s.applications?.total || 0,
-          approvedDesigners: s.users?.designers || 0,
-          totalDesigns: s.designs?.total || 0,
-          pendingDesigns: s.designs?.pending || 0
-        }));
-      }
+      const s = await api('/api/admin/stats', { token });
+      setStats(prev => ({
+        ...prev,
+        totalApplications: s.applications?.total || 0,
+        approvedDesigners: s.users?.designers || 0,
+        totalDesigns: s.designs?.total || 0,
+        pendingDesigns: s.designs?.pending || 0
+      }));
 
       // Fetch recent pending brand products for quick review
       try {
-        const prodRes = await fetch('/api/admin/products?approved=false&limit=6', { headers: { Authorization: `Bearer ${token}` }});
-        if (prodRes.ok) {
-          const p = await prodRes.json();
-          setBrandProducts(p.products || p || []);
-        } else {
-          setBrandProducts([]);
-        }
+        const p = await api('/api/admin/products?approved=false&limit=6', { token });
+        setBrandProducts(p.products || p || []);
       } catch {
         setBrandProducts([]);
       }
@@ -91,20 +78,13 @@ const AdminDashboard = () => {
         ? "/api/admin/applications/approve" 
         : "/api/admin/applications/reject";
 
-      const response = await fetch(endpoint, {
+      await api(endpoint, {
         method: "PATCH",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ userId, adminNotes: notes })
+        token,
+        body: { userId, adminNotes: notes }
       });
 
-      if (response.ok) {
-        fetchDashboardData();
-      } else {
-        console.error("Failed to process application");
-      }
+      fetchDashboardData();
     } catch (error) {
       console.error("Error processing application:", error);
     }

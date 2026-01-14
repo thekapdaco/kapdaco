@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, SlidersHorizontal, Package } from "lucide-react";
 import ProductCard from "../../components/ProductCard";
+import api from "../../lib/api";
 import "../../styles/womens-collection.css";
 
 const Women = () => {
@@ -15,9 +16,7 @@ const Women = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/public/products?category=women`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message || "Failed to load products");
+        const data = await api('/api/public/products?category=women');
         setItems((data.products || []).map(p => ({ 
           id: p._id, 
           name: p.title, 
