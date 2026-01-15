@@ -2,7 +2,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // API base URL from environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const resolveApiBaseUrl = () => {
+  const envBase = import.meta.env.VITE_API_BASE_URL;
+  if (envBase) return String(envBase).trim().replace(/\/+$/, '');
+  if (typeof window !== 'undefined') {
+    const host = (window.location.hostname || '').toLowerCase();
+    if (host === 'kapdaco.vercel.app' || host.endsWith('.vercel.app')) {
+      return 'https://kapdaco.onrender.com';
+    }
+  }
+  return '';
+};
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 const AuthContext = createContext();
 
