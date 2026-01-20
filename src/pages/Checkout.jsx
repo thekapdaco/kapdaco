@@ -357,7 +357,7 @@ const Checkout = () => {
         method: 'POST',
         token: token,
         body: {
-          amount: amountInPaise,
+          amount: finalTotal,
           currency: 'INR',
           receipt: `order_${Date.now()}`,
         }

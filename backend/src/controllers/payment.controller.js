@@ -189,7 +189,8 @@ export const handleWebhook = async (req, res) => {
       return res.status(400).json({ message: 'Missing webhook signature' });
     }
 
-    const text = JSON.stringify(req.body);
+    const rawBody = req.rawBody;
+    const text = Buffer.isBuffer(rawBody) ? rawBody.toString('utf8') : JSON.stringify(req.body);
     const generatedSignature = crypto
       .createHmac('sha256', webhookSecret)
       .update(text)

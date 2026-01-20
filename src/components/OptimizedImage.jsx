@@ -27,9 +27,28 @@ const OptimizedImage = ({
   const containerRef = useRef(null);
   const imgRef = useRef(null);
 
+  const resolveMediaBaseUrl = () => {
+    const envBase = import.meta.env.VITE_API_BASE_URL;
+    if (envBase) return String(envBase).trim().replace(/\/+$/, '');
+    if (typeof window !== 'undefined') {
+      const host = (window.location.hostname || '').toLowerCase();
+      if (host === 'kapdaco.vercel.app' || host.endsWith('.vercel.app')) {
+        return 'https://kapdaco.onrender.com';
+      }
+    }
+    return '';
+  };
+
   // Generate WebP and JPG variants
   const getImageUrl = (format, size = '') => {
     if (!src) return '';
+    const base = resolveMediaBaseUrl();
+    if (!src.startsWith('http')) {
+      if (src.startsWith('/uploads/') || src.startsWith('uploads/')) {
+        const normalized = src.startsWith('/') ? src : `/${src}`;
+        return base ? `${base}${normalized}` : normalized;
+      }
+    }
     // If src already contains format, return as is
     if (src.includes('.webp') || src.includes('.jpg') || src.includes('.jpeg') || src.includes('.png')) {
       return src;
