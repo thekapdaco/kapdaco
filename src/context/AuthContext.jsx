@@ -7,7 +7,8 @@ const resolveApiBaseUrl = () => {
   if (envBase) return String(envBase).trim().replace(/\/+$/, '');
   if (typeof window !== 'undefined') {
     const host = (window.location.hostname || '').toLowerCase();
-    if (host === 'kapdaco.vercel.app' || host.endsWith('.vercel.app')) {
+    const isLocalhost = host === 'localhost' || host === '127.0.0.1';
+    if (!isLocalhost) {
       return 'https://kapdaco.onrender.com';
     }
   }

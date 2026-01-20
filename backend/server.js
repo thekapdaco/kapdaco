@@ -76,11 +76,18 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS 
-  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
-  : process.env.CLIENT_URL 
-    ? [process.env.CLIENT_URL]
-    : ['http://localhost:5173', 'http://localhost:3000']; // Development fallback
+const allowedOrigins = [
+  ...(process.env.CORS_ALLOWED_ORIGINS
+    ? process.env.CORS_ALLOWED_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean)
+    : []),
+  ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+  // Deployment fallback for the primary Vercel frontend
+  ...(process.env.NODE_ENV === 'production' ? ['https://kapdaco.vercel.app'] : []),
+  // Development fallback
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:5173', 'http://localhost:3000']
+    : []),
+];
 
 const normalizeOrigin = (value) => {
   if (!value) return value;
@@ -89,7 +96,7 @@ const normalizeOrigin = (value) => {
 
 const normalizedAllowedOrigins = allowedOrigins.map(normalizeOrigin);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (platform health checks, server-to-server, Postman)
     if (!origin) {
@@ -114,12 +121,16 @@ app.use(cors({
         // In production, only log to avoid exposing allowed origins
         console.warn(`CORS: Origin ${origin} not allowed`);
       }
-      callback(new Error('Not allowed by CORS'));
+      // Don't throw an error here; it can cause HTML/500 responses that break browser preflight.
+      callback(null, false);
     }
   },
   credentials: true,
   optionsSuccessStatus: 200,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Cookie parser middleware (required for HTTP-only cookies)
 app.use(cookieParser());
