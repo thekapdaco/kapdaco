@@ -63,7 +63,7 @@ const AuditLogSchema = new mongoose.Schema({
   target: {
     type: {
       type: String,
-      enum: ['order', 'user', 'product', 'payment', 'cart', 'stock', 'commission']
+      enum: ['order', 'user', 'product', 'payment', 'cart', 'stock', 'commission', 'auth']
     },
     id: mongoose.Schema.Types.ObjectId,
     reference: String // Additional reference like order number, email, etc.

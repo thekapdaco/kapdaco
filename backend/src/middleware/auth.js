@@ -31,7 +31,7 @@ export const auth = async (req, res, next) => {
       createAuditLog({
         action: 'UNAUTHORIZED_ACCESS_ATTEMPT',
         actor: { userId: null, ipAddress },
-        target: { type: 'Auth', path: req.path },
+        target: { type: 'auth', path: req.path },
         details: {
           reason: 'No token provided',
           path: req.path,
@@ -61,7 +61,7 @@ export const auth = async (req, res, next) => {
       createAuditLog({
         action: 'UNAUTHORIZED_ACCESS_ATTEMPT',
         actor: { userId: null, ipAddress },
-        target: { type: 'Auth', path: req.path },
+        target: { type: 'auth', path: req.path },
         details: {
           reason: `Invalid token: ${jwtError.name}`,
           path: req.path,
@@ -106,7 +106,7 @@ export const auth = async (req, res, next) => {
       createAuditLog({
         action: 'INACTIVE_USER_ACCESS_ATTEMPT',
         actor: { userId: user._id.toString(), role: user.role, ipAddress },
-        target: { type: 'Auth', path: req.path },
+        target: { type: 'auth', path: req.path },
         details: {
           reason: 'User account is inactive',
           userRole: user.role,
@@ -169,7 +169,7 @@ export const isAdmin = (req, res, next) => {
     createAuditLog({
       action: 'UNAUTHORIZED_ROLE_ACCESS',
       actor: { userId: req.user._id.toString(), role: req.user.role, ipAddress },
-      target: { type: 'Auth', path: req.path },
+      target: { type: 'auth', path: req.path },
       details: {
         userRole: req.user.role,
         requiredRole: 'admin',
@@ -208,7 +208,7 @@ export const isDesigner = (req, res, next) => {
     createAuditLog({
       action: 'UNAUTHORIZED_ROLE_ACCESS',
       actor: { userId: req.user._id.toString(), role: req.user.role, ipAddress },
-      target: { type: 'Auth', path: req.path },
+      target: { type: 'auth', path: req.path },
       details: {
         userRole: req.user.role,
         requiredRole: 'designer',
@@ -247,7 +247,7 @@ export const isDesignerOrAdmin = (req, res, next) => {
     createAuditLog({
       action: 'UNAUTHORIZED_ROLE_ACCESS',
       actor: { userId: req.user._id.toString(), role: req.user.role, ipAddress },
-      target: { type: 'Auth', path: req.path },
+      target: { type: 'auth', path: req.path },
       details: {
         userRole: req.user.role,
         requiredRoles: ['designer', 'admin'],
@@ -286,7 +286,7 @@ export const isBrand = (req, res, next) => {
     createAuditLog({
       action: 'UNAUTHORIZED_ROLE_ACCESS',
       actor: { userId: req.user._id.toString(), role: req.user.role, ipAddress },
-      target: { type: 'Auth', path: req.path },
+      target: { type: 'auth', path: req.path },
       details: {
         userRole: req.user.role,
         requiredRole: 'brand',
@@ -325,7 +325,7 @@ export const isBrandOrAdmin = (req, res, next) => {
     createAuditLog({
       action: 'UNAUTHORIZED_ROLE_ACCESS',
       actor: { userId: req.user._id.toString(), role: req.user.role, ipAddress },
-      target: { type: 'Auth', path: req.path },
+      target: { type: 'auth', path: req.path },
       details: {
         userRole: req.user.role,
         requiredRoles: ['brand', 'admin'],

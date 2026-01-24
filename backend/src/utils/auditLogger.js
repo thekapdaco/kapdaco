@@ -71,7 +71,9 @@ export const createAuditLog = async (options, req = null) => {
 
     // Also log to application logger for immediate visibility
     if (status === 'failure' || error) {
-      logger.error('Audit: Action failed', {
+      const isExpectedUnauthorized = action === 'UNAUTHORIZED_ACCESS_ATTEMPT';
+      const logFn = isExpectedUnauthorized ? logger.warn : logger.error;
+      logFn('Audit: Action failed', {
         action,
         actor: auditEntry.actor,
         target: auditEntry.target,
