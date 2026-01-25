@@ -22,7 +22,7 @@ const recommendedProducts = [
 
 const Cart = () => {
   const { cart, updateItem, removeItem, clearCart, applyCoupon, removeCoupon, addToCart: addToCartContext } = useCart();
-  const { token, user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { scrollY } = useScroll();
   const toast = useToast();
   const [coupon, setCoupon] = useState('');
@@ -189,7 +189,7 @@ const Cart = () => {
   const validateAndCheckout = async () => {
     setError('');
     try {
-      if (!token) {
+      if (!isAuthenticated) {
         window.location.href = '/login?next=/checkout';
         return;
       }
@@ -210,7 +210,7 @@ const Cart = () => {
       // Custom products (non-MongoDB IDs) are stored locally and will be handled in checkout
       if (hasRegularProducts) {
         try {
-          await api('/api/cart/validate', { method: 'POST', token });
+          await api('/api/cart/validate', { method: 'POST' });
         } catch (e) {
           // If validation fails, check if it's because backend cart is empty but we have custom items
           if (e.message?.includes('Cart is empty')) {

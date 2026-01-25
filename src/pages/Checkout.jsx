@@ -43,7 +43,7 @@ const deliveryOptions = [
 
 const Checkout = () => {
   const { cart, clearCart } = useCart();
-  const { token } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const items = cart?.items || [];
   const totals = cart?.totals || { subtotal: 0, shipping: 0, tax: 0, total: 0 };
@@ -107,10 +107,10 @@ const Checkout = () => {
 
   // Load saved addresses
   useEffect(() => {
-    if (token) {
+    if (isAuthenticated) {
       const loadAddresses = async () => {
         try {
-          const response = await api('/api/addresses', { token });
+          const response = await api('/api/addresses');
           setSavedAddresses(response.addresses || []);
           // Auto-select default address if available
           const defaultAddr = response.addresses?.find(addr => addr.isDefault);
@@ -125,7 +125,7 @@ const Checkout = () => {
       loadAddresses();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]); // handleSelectAddress is stable, safe to omit from deps
+  }, [isAuthenticated]); // handleSelectAddress is stable, safe to omit from deps
 
   // Track checkout start when component mounts
   useEffect(() => {
@@ -181,7 +181,7 @@ const Checkout = () => {
       return;
     }
 
-    if (!token) {
+    if (!isAuthenticated) {
       setError('Please log in to place an order');
       navigate('/login');
       return;
@@ -321,7 +321,6 @@ const Checkout = () => {
       if (form.paymentMethod === 'cod' || form.paymentMethod === 'bank_transfer') {
         const response = await api('/api/orders', {
           method: 'POST',
-          token: token,
           body: {
             ...orderPayload,
             paymentStatus: 'pending',
@@ -355,7 +354,6 @@ const Checkout = () => {
 
       const paymentOrderResponse = await api('/api/payments/create-order', {
         method: 'POST',
-        token: token,
         body: {
           amount: finalTotal,
           currency: 'INR',
@@ -389,7 +387,6 @@ const Checkout = () => {
             // Verify payment
             const verifyResponse = await api('/api/payments/verify', {
               method: 'POST',
-              token: token,
               body: {
                 razorpay_order_id: paymentResponse.razorpay_order_id,
                 razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -404,7 +401,6 @@ const Checkout = () => {
             // Create order with payment ID
             const orderResponse = await api('/api/orders', {
               method: 'POST',
-              token: token,
               body: {
                 ...orderPayload,
                 paymentId: verifyResponse.paymentId,

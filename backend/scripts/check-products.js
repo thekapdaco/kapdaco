@@ -115,12 +115,12 @@ const checkProducts = async () => {
 
     // Check if products match API query
     const menProducts = await Product.countDocuments({
-      category: { $in: ['men', 'mens'] },
+      gender: 'men',
       isApproved: true,
       status: 'published'
     });
     const womenProducts = await Product.countDocuments({
-      category: { $in: ['women', 'womens'] },
+      gender: 'women',
       isApproved: true,
       status: 'published'
     });
